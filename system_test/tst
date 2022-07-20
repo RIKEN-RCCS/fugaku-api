@@ -1,0 +1,56 @@
+#! /bin/sh
+
+. ./cnf
+
+hpccli() {
+	$HPCCLI "$@"
+}
+
+export HPCCLI_BASEURL=$ENDPOINT
+export HPCCLI_CERTIFICATE=$CERTIFICATE
+export HPCCLI_PRIVATEKEY=$PRIVATEKEY
+export HPCCLI_JWTTOKEN=$(mktemp /tmp/hpccli.token.XXXXXX || exit 1)
+export HPCCLI_USERNAME=$USER
+export HPCCLI_PASSWORD=$PASS
+
+python3 jwttoken.py $USER $PASS > $HPCCLI_JWTTOKEN
+
+printf "Please start http server with SSLVerifyClient enabled\n"
+printf "hit enter to proceed: "
+read ans
+
+set -o xtrace
+
+export HPCCLI_AUTHMETHOD=client
+
+hpccli system status
+hpccli file list ""
+hpccli command 'echo "[$(hostname) $(pwd) $(date)]"'
+hpccli system admin 'echo "[$(hostname) $(pwd) $(date)]"'
+hpccli system get group
+hpccli system get user
+hpccli job list
+
+set +o xtrace
+
+printf "Please start http server with SSLVerifyClient disabled\n"
+printf "hit enter to proceed: "
+read ans
+
+set -o xtrace
+
+export HPCCLI_AUTHMETHOD=token
+
+hpccli system status
+hpccli system get group
+hpccli system get user
+
+export HPCCLI_AUTHMETHOD=basic
+
+hpccli system status
+hpccli system get group
+hpccli system get user
+
+set +o xtrace
+
+[ ! -f $HPCCLI_JWTTOKEN ] || rm $HPCCLI_JWTTOKEN

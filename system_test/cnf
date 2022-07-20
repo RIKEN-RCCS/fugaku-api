@@ -1,0 +1,6 @@
+USER=alice
+PASS=secret
+ENDPOINT=https://127.0.0.1
+CERTIFICATE=$HOME/work/ubi/etc/alice.crt
+PRIVATEKEY=$HOME/work/ubi/etc/alice.key
+HPCCLI=$HOME/work/go/src/hpccli/hpccli

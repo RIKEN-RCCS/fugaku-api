@@ -1,0 +1,11 @@
+setuptools.setup(
+    name="hpcrestapi",
+    version="0.1.0",
+    author="",
+    author_email="",
+    description="",
+    long_description="",
+    long_description_content_type="text/markdown",
+    url="",
+    packages=["hpcrestapi"]
+)

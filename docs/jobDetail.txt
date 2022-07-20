@@ -1,0 +1,39 @@
+# Job Detail
+
+The Job Detail API allows users to get job detail information.
+This API is available for authenticated users.
+
+
+# Endpoint
+
+  *get* /jobs/{jobid}
+
+
+# Parameters
+
+  None
+
+
+# Default response example
+
+Status: 200 OK
+
+{
+  "jobid": "2",
+  "partition": "dvl",
+  "name": "sbatch",
+  "user": "nis",
+  "st": "PD",
+  "time": "0:00",
+  "nodes": "1",
+  "nodelist": "(Resources)"
+}
+
+
+# Error response example
+
+500 Internal Server Error
+
+{
+  "detail": "System Error"
+}

@@ -1,0 +1,92 @@
+コマンド対応表
+
+
+各操作と HPC REST API サーバ上で実行するコマンドの対応表です。
+
+
+<SUDO> := sudo --user=<user_name> --group=<user_group> --command-timeout <command_timeout> --non-interactive --set-home
+
+＃ <user_name>、<user_group> 認証時のものを使用。
+＃ <command_timeout> は XXXX で指定。
+＃ <execute_command> は利用者指定するジョブスクリプト。
+
+
+ジョブ操作：
+   ジョブ投入：hpccli jobs submit <job_script_file_path> [options]
+      FUGAKU:
+      TORQUE: <SUDO> qsub [options] <job_script_file_path>
+      SLURM: <SUDO> sbatch [options] <job_script_file_path>
+
+   ジョブ削除：hpccli jobs delete <job_id> [options]
+      FUGAKU:
+      TORQUE: <SUDO> qdel [options] <job_id>
+      SLURM: <SUDO> scancel [options] <job_id>
+
+   ジョブ一覧取得：hpccli jobs list
+      FUGAKU:
+      TORQUE: <SUDO> qstat -a -u <user_name>
+      SLURM: <SUDO> squeue -u <user_name>
+
+   ジョブ詳細取得： hpccli jobs detail <job_id> [options]
+      FUGAKU:
+      TORQUE: <SUDO> tracejob <job_id> [options]
+      SLURM: <SUDO> sacct -j <job_id> [options]
+
+
+ファイル操作：
+   アップロード：＃検討中＃ from fastapi import FastAPI, Form する？
+                            python-magic fastapiは save() が無いので
+			    shutil.copyfileobj を使用して保存できる
+                            らしい。
+   ダウンロード：＃検討中＃ 
+
+   ファイル一覧：<SUDO> ls -alrt [path]...
+
+   ディレクトリ操作：<SUDO> mv <src_path> <dst_path>
+
+   権限操作：<SUDO> chmod <mode> <path>
+
+
+コマンド操作
+   任意コマンド実行：<SUDO> <command_line>
+
+
+HPCシステム：
+   システムの状態取得：
+      FUGAKU:
+      TORQUE: <SUDO> qstat -B
+      SLURM: <SUDO> sinfo -all
+
+   ユーザ・グループ情報取得：
+      ユーザ情報取得： <SUDO> getent passwd <user_name>
+      グループ情報取得：<SUDO> getent group <group_name>
+
+
+   運用者による機能拡張：
+       REST API SERVER 設定ファイル(XXX.yaml)に登録する。
+
+       次のような登録を想定（変更の可能性大）
+
+           administrator_commands:
+               node_status: sudo -u admin qnodes -l
+               set_node_offline <0>: sudo -u admin qnodes -o <0>
+               set_node_online <0>: sudo -u admin qnodes -r <0>
+
+       利用者コマンドライン
+         hpccli admin node_status
+         hpccli admin set_node_offline node1234
+         hpccli admin set_node_offline node5678
+
+
+       REST API サーバ上では次のコマンドを実行する。
+         sudo -u admin qnodes -l
+         sudo -u admin qnodes -o node1234
+         sudo -u admin qnodes -r node5678
+
+
+参考
+[1] TORQUE Documents
+    https://support.adaptivecomputing.com/torque-resource-manager-documentation/
+[2] SLURM Documents
+    https://slurm.schedmd.com/documentation.html
+

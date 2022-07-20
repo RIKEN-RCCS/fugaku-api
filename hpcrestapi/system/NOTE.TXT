@@ -1,0 +1,192 @@
+System    submit    status    delete
+--------  --------  --------  --------
+Fugaku    pjsub     pjstat    pjdel
+Slurm     sbatch    squeue    scancel
+Torque    qsub      qstat     qdel
+
+--
+
+SAMPLE COMMAND LINE OUTPUT
+
+=====FUGAKU=====================================================================
+Script started on 2021-04-12 11:25:46+09:00
+$ pjsub job1.sh
+[INFO] PJM 0000 pjsub Job 6291500 submitted.
+$ pjsub job1.sh
+[INFO] PJM 0000 pjsub Job 6291501 submitted.
+$ pjstat -v
+JOB_ID     JOB_NAME   MD ST  USER     GROUP    START_DATE      ELAPSE_TIM ELAPSE_LIM            NODE_REQUIRE    VNODE  CORE V_MEM        V_POL E_POL RANK      LST EC  PC  SN PRI ACCEPT         RSC_GRP  REASON          
+6291500    job1.sh    NM RNA a03010   rccs-aot (04/12 11:25)   0000:00:00 0000:01:00            12              -      -    -            -     -     bychip    QUE 0   0   0  127 04/12 11:25:50 small    -               
+6291501    job1.sh    NM RNA a03010   rccs-aot (04/12 11:25)   0000:00:00 0000:01:00            12              -      -    -            -     -     bychip    QUE 0   0   0  127 04/12 11:25:51 small    -               
+$ pjstat -v 6291500
+JOB_ID     JOB_NAME   MD ST  USER     GROUP    START_DATE      ELAPSE_TIM ELAPSE_LIM            NODE_REQUIRE    VNODE  CORE V_MEM        V_POL E_POL RANK      LST EC  PC  SN PRI ACCEPT         RSC_GRP  REASON          
+6291500    job1.sh    NM RUN a03010   rccs-aot 04/12 11:25:55  0000:00:07 0000:01:00            12              -      -    -            -     -     bychip    RNA 0   0   0  127 04/12 11:25:50 small    -               
+$ pjdel 6291500
+[INFO] PJM 0100 pjdel Accepted job 6291500.
+$ pjdel 6291501
+[INFO] PJM 0100 pjdel Accepted job 6291501.
+$ exit
+
+Script done on 2021-04-12 11:26:10+09:00
+
+=====SLURM======================================================================
+
+@@@ squeue --format=%all
+
+Script started on 2021-04-12 11:29:20+0900
+$ sbatch job1.sh
+Submitted batch job 92
+$ sbatch job1.sh
+Submitted batch job 93
+$ squeue --format=%all -j 92
+ACCOUNT|GRES|MIN_CPUS|MIN_TMP_DISK|END_TIME|FEATURES|GROUP|OVER_SUBSCRIBE|JOBID|NAME|COMMENT|TIME_LIMIT|MIN_MEMORY|REQ_NODES|COMMAND|PRIORITY|QOS|REASON||ST|USER|RESERVATION|WCKEY|EXC_NODES|NICE|S:C:T|JOBID|EXEC_HOST|CPUS|NODES|DEPENDENCY|ARRAY_JOB_ID|GROUP|SOCKETS_PER_NODE|CORES_PER_SOCKET|THREADS_PER_CORE|ARRAY_TASK_ID|TIME_LEFT|TIME|NODELIST|CONTIGUOUS|PARTITION|PRIORITY|NODELIST(REASON)|START_TIME|STATE|USER|SUBMIT_TIME|LICENSES|CORE_SPEC|SCHEDNODES|WORK_DIR
+(null)|(null)|1|0|N/A|(null)|member|OK|92|job1.sh|(null)|UNLIMITED|0||/home/nis/ubi/job1.sh|0.99998472025618|(null)|Resources||PD|nis|(null)|(null)||0|*:*:*|92|n/a|1|1||92|200|*|*|*|N/A|UNLIMITED|0:00||0|dvl|4294901669|(Resources)|N/A|PENDING|1321|2021-04-12T11:29:26|(null)|N/A|(null)|/home/nis/ubi
+$ squeue --format=%all
+ACCOUNT|GRES|MIN_CPUS|MIN_TMP_DISK|END_TIME|FEATURES|GROUP|OVER_SUBSCRIBE|JOBID|NAME|COMMENT|TIME_LIMIT|MIN_MEMORY|REQ_NODES|COMMAND|PRIORITY|QOS|REASON||ST|USER|RESERVATION|WCKEY|EXC_NODES|NICE|S:C:T|JOBID|EXEC_HOST|CPUS|NODES|DEPENDENCY|ARRAY_JOB_ID|GROUP|SOCKETS_PER_NODE|CORES_PER_SOCKET|THREADS_PER_CORE|ARRAY_TASK_ID|TIME_LEFT|TIME|NODELIST|CONTIGUOUS|PARTITION|PRIORITY|NODELIST(REASON)|START_TIME|STATE|USER|SUBMIT_TIME|LICENSES|CORE_SPEC|SCHEDNODES|WORK_DIR
+(null)|(null)|1|0|N/A|(null)|member|OK|92|job1.sh|(null)|UNLIMITED|0||/home/nis/ubi/job1.sh|0.99998472025618|(null)|Resources||PD|nis|(null)|(null)||0|*:*:*|92|n/a|1|1||92|200|*|*|*|N/A|UNLIMITED|0:00||0|dvl|4294901669|(Resources)|N/A|PENDING|1321|2021-04-12T11:29:26|(null)|N/A|(null)|/home/nis/ubi
+(null)|(null)|1|0|N/A|(null)|member|OK|93|job1.sh|(null)|UNLIMITED|0||/home/nis/ubi/job1.sh|0.99998472002335|(null)|Resources||PD|nis|(null)|(null)||0|*:*:*|93|n/a|1|1||93|200|*|*|*|N/A|UNLIMITED|0:00||0|dvl|4294901668|(Resources)|N/A|PENDING|1321|2021-04-12T11:29:27|(null)|N/A|(null)|/home/nis/ubi
+$ scancel 92
+$ scancel 93
+$ exit
+
+Script done on 2021-04-12 11:29:50+0900
+
+=====TORQUE=====================================================================
+
+Script started on 2021-04-12 11:31:48+0900
+$ qsub job1.sh
+94
+$ qsub job1.sh
+95
+$ qstat -f 94
+Job Id:	94
+	Job_Name = job1.sh
+	Job_Owner = nis@dvl3-01
+	job_state = Q
+	queue = dvl
+	qtime = Mon Apr 12 11:31:53 2021
+	Priority = 4294901667
+	euser = nis(1321)
+	egroup = member(200)
+	Resource_List.walltime = 71582788:15:00
+	Resource_List.nodect = 1
+	Resource_List.ncpus = 1
+
+$ qstat -f
+Job Id:	94
+	Job_Name = job1.sh
+	Job_Owner = nis@dvl3-01
+	job_state = Q
+	queue = dvl
+	qtime = Mon Apr 12 11:31:53 2021
+	Priority = 4294901667
+	euser = nis(1321)
+	egroup = member(200)
+	Resource_List.walltime = 71582788:15:00
+	Resource_List.nodect = 1
+	Resource_List.ncpus = 1
+
+Job Id:	95
+	Job_Name = job1.sh
+	Job_Owner = nis@dvl3-01
+	job_state = Q
+	queue = dvl
+	qtime = Mon Apr 12 11:31:53 2021
+	Priority = 4294901666
+	euser = nis(1321)
+	egroup = member(200)
+	Resource_List.walltime = 71582788:15:00
+	Resource_List.nodect = 1
+	Resource_List.ncpus = 1
+
+$ qdel 94
+$ qdel 95
+$ exit
+
+Script done on 2021-04-12 11:32:23+0900
+
+--
+
+Time Formats:
+"0000:00:00"
+"0000:01:00"
+"0:00"
+
+Date Formats:
+"(04/12 11:25)"
+"04/12 11:25:50"
+"2021-04-12T14:36:55"
+"Mon Apr 12 14:36:55 2021"
+
+--
+
+Field Mapping
+
+Common                         | Fugaku        | Slurm             | Torque                  | pretty         | pr | type | description
+
+job_id                         | JOB_ID        | JOBID             | Job Id                  | Job Id         | 11 | string | Job id
+job_name                       | JOB_NAME      | NAME              | Job_Name                | Job Name       | 11 | string | Job name
+status                         | ST            | ST                | job_state               | Status         |  6 | string | Job state
+user                           | USER          | USER              | euser                   | User           |  9 | string | User
+group                          | GROUP         | GROUP             | egroup                  | Group          |  9 | string | Group of user executiong job
+start_date                     | START_DATE    |                   | qtime                   | Start Date     | 19 | ISO8601 YYYY-MM-DDTHH:MM:SS | Start date (incl. sched.)
+elapse_time                    | ELAPSE_TIM    | TIME              |                         | Elapsed Time   | 12 | HHHH:MM:SS | Elapsed time
+node_require                   | NODE_REQUIRE  | NODES             |                         | Nodes          | 16 | string | Shape and node
+priority                       | PRI           | PRIORITY          | Priority                | Priority       | 10 | string | Priority of the job
+accept                         | ACCEPT        | SUBMIT_TIME       |                         | Submit Date    | 19 | ISO8601 YYYY-MM-DDTHH:MM:SS | Job submission date
+queue                          | RSC_GRP       | PARTITION         | queue                   | Queue          |  9 | string | Resource group
+Fugaku:elapse_limit            | ELAPSE_LIM    |                   |                         |                |    | HHHH:MM:SS | Elapsed time limit
+Fugaku:md                      | MD            |                   |                         |                |    | | Job model
+Fugaku:vnode                   | VNODE         |                   |                         |                |    | | Number of virtual node
+Fugaku:core                    | CORE          |                   |                         |                |    | | Number of cpu nodes
+Fugaku:v_mem                   | V_MEM         |                   |                         |                |    | | Amount of memory
+Fugaku:v_pol                   | V_POL         |                   |                         |                |    | | V node arrange policy
+Fugaku:e_pol                   | E_POL         |                   |                         |                |    | | Execution mode policy
+Fugaku:rank                    | RANK          |                   |                         |                |    | | Allocation rule of the rank
+Fugaku:lst                     | LST           |                   |                         |                |    | | Last processing state
+Fugaku:ec                      | EC            |                   |                         |                |    | | Job script exit code
+Fugaku:pc                      | PC            |                   |                         |                |    | | PJM code
+Fugaku:sn                      | SN            |                   |                         |                |    | | Signal number
+Fugaku:reason                  | REASON        |                   |                         |                |    | | Error message
+Torque:JobOwner                |               |                   | Job_Owner               |                |    | | -
+Torque:Resource_List.walltime  |               |                   | Resource_List.walltime  |                |    | | -
+Torque:Resource_List.nodect    |               |                   | Resource_List.nodect    |                |    | | -
+Torque:Resource_List.ncpus     |               |                   | Resource_List.ncpus     |                |    | | -
+Slurm:ACCOUNT                  |               | ACCOUNT           |                         |                |    | | Account associated with the job
+Slurm:GRES                     |               | GRES              |                         |                |    | | Generic resources
+Slurm:MIN_CPUS                 |               | MIN_CPUS          |                         |                |    | | Minimum number of CPUs (processors) per node
+Slurm:MIN_TMP_DISK             |               | MIN_TMP_DISK      |                         |                |    | | Minimum size of temporary disk space
+Slurm:END_TIME                 |               | END_TIME          |                         |                |    | | The time of job termination, actual or expected
+Slurm:FEATURES                 |               | FEATURES          |                         |                |    | | Features required by the job
+Slurm:OVER_SUBSCRIBE           |               | OVER_SUBSCRIBE    |                         |                |    | | Over subscribed by other jobs
+Slurm:COMMENT                  |               | COMMENT           |                         |                |    | | Comment associated with the job
+Slurm:TIME_LIMIT               |               | TIME_LIMIT        |                         |                |    | | Timelimit for the job
+Slurm:MIN_MEMORY               |               | MIN_MEMORY        |                         |                |    | | Minimum size of memory
+Slurm:REQ_NODES                |               | REQ_NODES         |                         |                |    | | List of node names explicitly requested by the job
+Slurm:COMMAND                  |               | COMMAND           |                         |                |    | | The command to be executed
+Slurm:QOS                      |               | QOS               |                         |                |    | | Quality of service
+Slurm:REASON                   |               | REASON            |                         |                |    | | The reason a job is in its current state
+Slurm:RESERVATION              |               | RESERVATION       |                         |                |    | | Reservation for the job
+Slurm:WCKEY                    |               | WCKEY             |                         |                |    | | Workload Characterization Key
+Slurm:EXC_NODES                |               | EXC_NODES         |                         |                |    | | -
+Slurm:NICE                     |               | NICE              |                         |                |    | | Nice value
+Slurm:S:C:T                    |               | S:C:T             |                         |                |    | | Number of requested sockets, cores, and threads
+Slurm:EXEC_HOST                |               | EXEC_HOST         |                         |                |    | | Executing (batch) host
+Slurm:CPUS                     |               | CPUS              |                         |                |    | | Number of CPUs
+Slurm:DEPENDENCY               |               | DEPENDENCY        |                         |                |    | | Job dependencies remaining
+Slurm:ARRAY_JOB_ID             |               | ARRAY_JOB_ID      |                         |                |    | | Job ID of the job array
+Slurm:SOCKETS_PER_NODE         |               | SOCKETS_PER_NODE  |                         |                |    | | Number of sockets per node requested
+Slurm:CORES_PER_SOCKET         |               | CORES_PER_SOCKET  |                         |                |    | | Number of cores per socket requested
+Slurm:THREADS_PER_CORE         |               | THREADS_PER_CORE  |                         |                |    | | Number of threads per core
+Slurm:ARRAY_TASK_ID            |               | ARRAY_TASK_ID     |                         |                |    | | Task ID of the job array
+Slurm:TIME_LEFT                |               | TIME_LEFT         |                         |                |    | | Time left for the job
+Slurm:NODELIST                 |               | NODELIST          |                         |                |    | | List of nodes allocated to the job
+Slurm:CONTIGUOUS               |               | CONTIGUOUS        |                         |                |    | | Are contiguous nodes requested by the job
+Slurm:NODELIST(REASON)         |               | NODELIST(REASON)  |                         |                |    | | -
+Slurm:START_TIME               |               | START_TIME        |                         |                |    | | Actual or expected start time of the job
+Slurm:STATE                    |               | STATE             |                         |                |    | | Job state (extend form)
+Slurm:LICENSES                 |               | LICENSES          |                         |                |    | | Licenses reserved for the job
+Slurm:CORE_SPEC                |               | CORE_SPEC         |                         |                |    | | Count of cores reserved on each node for system use
+Slurm:SCHEDNODES               |               | SCHEDNODES        |                         |                |    | | A list of the nodes expected to be used
+Slurm:WORK_DIR                 |               | WORK_DIR          |                         |                |    | | The job's working directory
+

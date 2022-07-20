@@ -1,0 +1,42 @@
+# System Status
+
+The System Status API allows users to get system status.
+This API is available for authenticated users.
+
+
+# Endpoint
+
+  *get* /hpc_system/status
+
+
+# Parameters
+
+  None
+
+
+# Default response example
+
+Status: 200 OK
+
+[
+  {
+    "partition": "dvl*",
+    "avail": "up",
+    "timelimit": "infinite",
+    "job_size": "1-infinite",
+    "root": "no",
+    "oversubs": "NO",
+    "groups": "all",
+    "nodes": "1",
+    "state": "drained",
+    "nodelist": "dvl3-01"
+  }
+]
+
+# Error response example
+
+500 Internal Server Error
+
+{
+  "detail": "System Error"
+}
